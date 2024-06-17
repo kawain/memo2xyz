@@ -16,7 +16,7 @@ function App () {
   const renderPage = () => {
     switch (currentPage) {
       case 'homePage':
-        return <HomePage baseURL={baseURL} />
+        return <HomePage baseURL={baseURL} login={login} />
       case 'createPage':
         return <CreatePage baseURL={baseURL} setCurrentPage={setCurrentPage} />
       case 'loginPage':
@@ -28,7 +28,7 @@ function App () {
           />
         )
       default:
-        return <HomePage baseURL={baseURL} />
+        return <HomePage baseURL={baseURL} login={login} />
     }
   }
 

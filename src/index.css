@@ -1,5 +1,6 @@
 :root {
   --background-color: #fff;
+  --background-color2: #eee;
   --text-color: #202124;
 }
 
@@ -86,9 +87,9 @@ body {
     font-size: 1.3rem;
   }
 
-  .tr_col {
-    color: var(--background-color);
-    background-color: var(--text-color);
+  .trCol {
+    color: var(--text-color);
+    background-color: var(--background-color2);
   }
 
   svg {
@@ -96,7 +97,61 @@ body {
     width: auto;
     vertical-align: middle;
   }
+}
 
+.modal {
+  z-index: 20;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  h2,
+  h3 {
+    margin: initial;
+    border-bottom: initial;
+  }
+
+}
+
+.modal-content {
+  background-color: var(--background-color);
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 90%;
+  max-height: 80%;
+  overflow: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.close-button {
+  font-size: 20px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  svg {
+    color: var(--text-color);
+    height: 30px;
+    width: auto;
+    vertical-align: middle;
+  }
+
+}
+
+.modal-body {
+  margin-top: 10px;
 }
 
 .createForm {
@@ -160,9 +215,15 @@ button {
   cursor: pointer;
 }
 
+button[disabled] {
+  cursor: default;
+  pointer-events: none;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: #202124;
+    --background-color2: #303134;
     --text-color: #fff;
   }
 }

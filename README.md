@@ -2,4 +2,4 @@
 
 ### php のビルトインウェブサーバーを起動
 
-`php -S localhost:8008`
+php -S localhost:8008

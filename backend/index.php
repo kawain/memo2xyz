@@ -17,10 +17,28 @@ $pdo = new PDO('sqlite:posts.db');
 $pdo->exec('CREATE TABLE IF NOT EXISTS posts(id INTEGER PRIMARY KEY, title TEXT, content TEXT);');
 
 // GET
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+    // 個別
+    try {
+        $id = $_GET['id'];
+        $stmt = $pdo->query('SELECT * FROM posts WHERE id=?;');
+        $stmt->execute([$id]);
+        $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($rows);
+    } catch (Exception $e) {
+        echo json_encode(['error' => $e->getMessage()]);
+    }
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $stmt = $pdo->query('SELECT id, title FROM posts ORDER BY id DESC;');
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($rows);
+    try {
+        $stmt = $pdo->query('SELECT id, title FROM posts ORDER BY id DESC;');
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($rows);
+    } catch (Exception $e) {
+        echo json_encode(['error' => $e->getMessage()]);
+    }
     exit;
 }
 

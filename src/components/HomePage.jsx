@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
+import ArticleModal from './ArticleModal'
 
-function HomePage ({ baseURL }) {
+function HomePage ({ baseURL, login }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [postID, setPostID] = useState(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,6 +32,14 @@ function HomePage ({ baseURL }) {
     return <div>Error: {error.message}</div>
   }
 
+  const openModal = id => {
+    setPostID(id)
+  }
+
+  const closeModal = () => {
+    setPostID(null)
+  }
+
   return (
     <>
       <h2>ホーム</h2>
@@ -45,21 +55,21 @@ function HomePage ({ baseURL }) {
         </thead>
         <tbody>
           {data.map((post, i) => (
-            <tr key={i} className={i % 2 === 0 ? 'tr_col' : ''}>
+            <tr key={i} className={i % 2 === 0 ? 'trCol' : ''}>
               <td className='td1'>{post.id}</td>
               <td>{post.title}</td>
               <td className='td3'>
-                <button>
+                <button onClick={() => openModal(post.id)}>
                   <AiOutlineEye />
                 </button>
               </td>
               <td className='td3'>
-                <button>
+                <button disabled={!login}>
                   <AiOutlineEdit />
                 </button>
               </td>
               <td className='td3'>
-                <button>
+                <button disabled={!login}>
                   <AiOutlineDelete />
                 </button>
               </td>
@@ -67,6 +77,10 @@ function HomePage ({ baseURL }) {
           ))}
         </tbody>
       </table>
+
+      {postID && (
+        <ArticleModal baseURL={baseURL} id={postID} onClose={closeModal} />
+      )}
     </>
   )
 }
