@@ -1,4 +1,10 @@
 function Navbar ({ currentPage, setCurrentPage, login, setLogin }) {
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn')
+    setLogin(false)
+    setCurrentPage('homePage')
+  }
+
   return (
     <nav className='navbar'>
       <div className='nav-brand'>
@@ -28,14 +34,7 @@ function Navbar ({ currentPage, setCurrentPage, login, setLogin }) {
               新規作成
             </button>
 
-            <button
-              onClick={() => {
-                setCurrentPage('homePage')
-                setLogin(false)
-              }}
-            >
-              ログアウト
-            </button>
+            <button onClick={handleLogout}>ログアウト</button>
           </>
         )}
       </div>

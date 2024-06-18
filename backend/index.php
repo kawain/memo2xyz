@@ -85,3 +85,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+
+// PUT
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    try {
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $id = $postData['id'] ?? '';
+        $title = $postData['title'] ?? '';
+        $content = $postData['content'] ?? '';
+        $stmt = $pdo->prepare('UPDATE posts SET title=?, content=? WHERE id=?;');
+        $stmt->execute([$title, $content, $id]);
+        echo json_encode(['msg' => 'ok']);
+    } catch (Exception $e) {
+        echo json_encode(['msg' => $e->getMessage()]);
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    try {
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $id = $postData['id'] ?? '';
+        $stmt = $pdo->prepare('DELETE FROM posts WHERE id=?;');
+        $stmt->execute([$id]);
+        echo json_encode(['msg' => 'ok']);
+    } catch (Exception $e) {
+        echo json_encode(['msg' => $e->getMessage()]);
+    }
+}

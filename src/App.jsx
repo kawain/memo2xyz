@@ -12,13 +12,34 @@ function App () {
   const baseURL = import.meta.env.VITE_API_BASE_URL
   const [currentPage, setCurrentPage] = useState('homePage')
   const [login, setLogin] = useState(false)
+  const [update, setUpdate] = useState(0)
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn')
+    if (isLoggedIn === 'true') {
+      setLogin(true)
+    }
+  }, [])
 
   const renderPage = () => {
     switch (currentPage) {
       case 'homePage':
-        return <HomePage baseURL={baseURL} login={login} />
+        return (
+          <HomePage
+            baseURL={baseURL}
+            login={login}
+            update={update}
+            setUpdate={setUpdate}
+          />
+        )
       case 'createPage':
-        return <CreatePage baseURL={baseURL} setCurrentPage={setCurrentPage} />
+        return (
+          <CreatePage
+            baseURL={baseURL}
+            setCurrentPage={setCurrentPage}
+            setUpdate={setUpdate}
+          />
+        )
       case 'loginPage':
         return (
           <LoginPage
@@ -28,7 +49,14 @@ function App () {
           />
         )
       default:
-        return <HomePage baseURL={baseURL} login={login} />
+        return (
+          <HomePage
+            baseURL={baseURL}
+            login={login}
+            update={update}
+            setUpdate={setUpdate}
+          />
+        )
     }
   }
 

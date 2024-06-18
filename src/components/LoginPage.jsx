@@ -24,6 +24,7 @@ function LoginPage ({ baseURL, setCurrentPage, setLogin }) {
       })
       const data = await response.json()
       if (data.msg === 'ok') {
+        localStorage.setItem('isLoggedIn', 'true')
         setLogin(true)
         setCurrentPage('homePage')
       }

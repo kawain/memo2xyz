@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function CreatePage ({ baseURL, setCurrentPage }) {
+function CreatePage ({ baseURL, setCurrentPage, setUpdate }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -24,6 +24,7 @@ function CreatePage ({ baseURL, setCurrentPage }) {
       })
       const data = await response.json()
       if (data.msg === 'ok') {
+        setUpdate(pre => pre + 1)
         setCurrentPage('homePage')
       }
     } catch (error) {

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
 import ArticleModal from './ArticleModal'
+import EditArticleModal from './EditArticleModal'
 
-function HomePage ({ baseURL, login }) {
+function HomePage ({ baseURL, login, update, setUpdate }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [postID, setPostID] = useState(null)
+  const [modalMode, setModalMode] = useState('')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,7 +24,40 @@ function HomePage ({ baseURL, login }) {
     }
 
     fetchData()
-  }, [])
+  }, [update])
+
+  const openModal = (id, mode) => {
+    setModalMode(mode)
+    setPostID(id)
+  }
+
+  const closeModal = () => {
+    setPostID(null)
+  }
+
+  const handleDelete = async id => {
+    if (window.confirm('本当に削除しますか？')) {
+      setLoading(true)
+
+      try {
+        const response = await fetch(`${baseURL}/`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id })
+        })
+        const data = await response.json()
+        if (data.msg === 'ok') {
+          setUpdate(pre => pre + 1)
+        }
+        setLoading(false)
+      } catch (error) {
+        setLoading(false)
+        setError(error)
+      }
+    }
+  }
 
   if (loading) {
     return <div>Loading...</div>
@@ -30,14 +65,6 @@ function HomePage ({ baseURL, login }) {
 
   if (error) {
     return <div>Error: {error.message}</div>
-  }
-
-  const openModal = id => {
-    setPostID(id)
-  }
-
-  const closeModal = () => {
-    setPostID(null)
   }
 
   return (
@@ -59,17 +86,20 @@ function HomePage ({ baseURL, login }) {
               <td className='td1'>{post.id}</td>
               <td>{post.title}</td>
               <td className='td3'>
-                <button onClick={() => openModal(post.id)}>
+                <button onClick={() => openModal(post.id, 'get')}>
                   <AiOutlineEye />
                 </button>
               </td>
               <td className='td3'>
-                <button disabled={!login}>
+                <button
+                  onClick={() => openModal(post.id, 'put')}
+                  disabled={!login}
+                >
                   <AiOutlineEdit />
                 </button>
               </td>
               <td className='td3'>
-                <button disabled={!login}>
+                <button onClick={() => handleDelete(post.id)} disabled={!login}>
                   <AiOutlineDelete />
                 </button>
               </td>
@@ -77,9 +107,20 @@ function HomePage ({ baseURL, login }) {
           ))}
         </tbody>
       </table>
-
       {postID && (
-        <ArticleModal baseURL={baseURL} id={postID} onClose={closeModal} />
+        <>
+          {modalMode === 'get' && (
+            <ArticleModal baseURL={baseURL} id={postID} onClose={closeModal} />
+          )}
+          {modalMode === 'put' && (
+            <EditArticleModal
+              baseURL={baseURL}
+              id={postID}
+              onClose={closeModal}
+              setUpdate={setUpdate}
+            />
+          )}
+        </>
       )}
     </>
   )
