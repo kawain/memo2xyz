@@ -22,42 +22,32 @@ function App () {
   }, [])
 
   const renderPage = () => {
-    switch (currentPage) {
-      case 'homePage':
-        return (
-          <HomePage
-            baseURL={baseURL}
-            login={login}
-            update={update}
-            setUpdate={setUpdate}
-          />
-        )
-      case 'createPage':
-        return (
-          <CreatePage
-            baseURL={baseURL}
-            setCurrentPage={setCurrentPage}
-            setUpdate={setUpdate}
-          />
-        )
-      case 'loginPage':
-        return (
-          <LoginPage
-            baseURL={baseURL}
-            setCurrentPage={setCurrentPage}
-            setLogin={setLogin}
-          />
-        )
-      default:
-        return (
-          <HomePage
-            baseURL={baseURL}
-            login={login}
-            update={update}
-            setUpdate={setUpdate}
-          />
-        )
+    const pages = {
+      homePage: (
+        <HomePage
+          baseURL={baseURL}
+          login={login}
+          update={update}
+          setUpdate={setUpdate}
+        />
+      ),
+      createPage: (
+        <CreatePage
+          baseURL={baseURL}
+          setCurrentPage={setCurrentPage}
+          setUpdate={setUpdate}
+        />
+      ),
+      loginPage: (
+        <LoginPage
+          baseURL={baseURL}
+          setCurrentPage={setCurrentPage}
+          setLogin={setLogin}
+        />
+      )
     }
+
+    return pages[currentPage] || pages.homePage
   }
 
   return (

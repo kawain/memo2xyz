@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 function CreatePage ({ baseURL, setCurrentPage, setUpdate }) {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -14,7 +13,7 @@ function CreatePage ({ baseURL, setCurrentPage, setUpdate }) {
     const content = formData.get('content')
 
     try {
-      const response = await fetch(`${baseURL}/`, {
+      const response = await fetch(`${baseURL}/index.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -26,9 +25,11 @@ function CreatePage ({ baseURL, setCurrentPage, setUpdate }) {
       if (data.msg === 'ok') {
         setUpdate(pre => pre + 1)
         setCurrentPage('homePage')
+      } else {
+        alert('作成に失敗しました。')
       }
     } catch (error) {
-      setError(error)
+      alert('エラーが発生しました: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -36,10 +37,6 @@ function CreatePage ({ baseURL, setCurrentPage, setUpdate }) {
 
   if (loading) {
     return <div>Loading...</div>
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>
   }
 
   return (

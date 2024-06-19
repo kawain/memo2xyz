@@ -11,68 +11,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// データベース
-$pdo = new PDO('sqlite:posts.db');
-// なければテーブル作成
-$pdo->exec('CREATE TABLE IF NOT EXISTS posts(id INTEGER PRIMARY KEY, title TEXT, content TEXT);');
-
-// GET
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-    // 個別
-    try {
-        $id = $_GET['id'];
-        $stmt = $pdo->query('SELECT * FROM posts WHERE id=?;');
-        $stmt->execute([$id]);
-        $rows = $stmt->fetch(PDO::FETCH_ASSOC);
-        echo json_encode($rows);
-    } catch (Exception $e) {
-        echo json_encode(['error' => $e->getMessage()]);
-    }
+// データベース接続
+try {
+    $pdo = new PDO('sqlite:posts.db');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // なければテーブル作成
+    $pdo->exec('CREATE TABLE IF NOT EXISTS posts(id INTEGER PRIMARY KEY, title TEXT, content TEXT);');
+} catch (Exception $e) {
+    echo json_encode(['msg' => 'error', 'error' => 'データベース接続に失敗しました: ' . $e->getMessage()]);
     exit;
 }
 
+// GETリクエスト処理
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    try {
-        $stmt = $pdo->query('SELECT id, title FROM posts ORDER BY id DESC;');
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode($rows);
-    } catch (Exception $e) {
-        echo json_encode(['error' => $e->getMessage()]);
+    if (isset($_GET['id'])) {
+        // 個別取得
+        try {
+            $id = $_GET['id'];
+            $stmt = $pdo->prepare('SELECT * FROM posts WHERE id = ?;');
+            $stmt->execute([$id]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            echo json_encode(['msg' => 'ok', 'data' => $row]);
+        } catch (Exception $e) {
+            echo json_encode(['msg' => 'error', 'error' => $e->getMessage()]);
+        }
+    } elseif (isset($_GET['q'])) {
+        // 検索
+        try {
+            $q = $_GET['q'];
+            $stmt = $pdo->prepare('SELECT * FROM posts WHERE title LIKE ? OR content LIKE ? ORDER BY id DESC;');
+            $stmt->execute(["%{$q}%", "%{$q}%"]);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode(['msg' => 'ok', 'data' => $rows]);
+        } catch (Exception $e) {
+            echo json_encode(['msg' => 'error', 'error' => $e->getMessage()]);
+        }
+    } else {
+        // 全件取得
+        try {
+            $stmt = $pdo->query('SELECT id, title FROM posts ORDER BY id DESC;');
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode(['msg' => 'ok', 'data' => $rows]);
+        } catch (Exception $e) {
+            echo json_encode(['msg' => 'error', 'error' => $e->getMessage()]);
+        }
     }
     exit;
 }
 
-// POST
+// POSTリクエスト処理
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // POSTデータを取得
     $postData = json_decode(file_get_contents('php://input'), true);
-
-    // modeを取得
     $mode = $postData['mode'] ?? '';
 
-    // modeがないのはおかしい
     if (!$mode) {
-        echo json_encode(['msg' => 'ng']);
+        echo json_encode(['msg' => 'error', 'error' => 'モードが指定されていません。']);
         exit;
     }
 
-    // ログイン
     if ($mode === 'login') {
-        // ユーザー名とパスワードを取得
         $username = $postData['username'] ?? '';
         $password = $postData['password'] ?? '';
 
         if ($username === '' && $password === PASSWORD) {
             echo json_encode(['msg' => 'ok']);
         } else {
-            echo json_encode(['msg' => 'ng']);
+            echo json_encode(['msg' => 'error', 'error' => '認証に失敗しました。']);
         }
         exit;
     }
 
-    // 新規作成
     if ($mode === 'create') {
-        // タイトルと内容を取得
         $title = $postData['title'] ?? '';
         $content = $postData['content'] ?? '';
         try {
@@ -80,35 +89,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$title, $content]);
             echo json_encode(['msg' => 'ok']);
         } catch (Exception $e) {
-            echo json_encode(['msg' => $e->getMessage()]);
+            echo json_encode(['msg' => 'error', 'error' => $e->getMessage()]);
         }
         exit;
     }
 }
 
-// PUT
+// PUTリクエスト処理
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     try {
         $postData = json_decode(file_get_contents('php://input'), true);
         $id = $postData['id'] ?? '';
         $title = $postData['title'] ?? '';
         $content = $postData['content'] ?? '';
-        $stmt = $pdo->prepare('UPDATE posts SET title=?, content=? WHERE id=?;');
+        $stmt = $pdo->prepare('UPDATE posts SET title = ?, content = ? WHERE id = ?;');
         $stmt->execute([$title, $content, $id]);
         echo json_encode(['msg' => 'ok']);
     } catch (Exception $e) {
-        echo json_encode(['msg' => $e->getMessage()]);
+        echo json_encode(['msg' => 'error', 'error' => $e->getMessage()]);
     }
+    exit;
 }
 
+// DELETEリクエスト処理
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     try {
         $postData = json_decode(file_get_contents('php://input'), true);
         $id = $postData['id'] ?? '';
-        $stmt = $pdo->prepare('DELETE FROM posts WHERE id=?;');
+        $stmt = $pdo->prepare('DELETE FROM posts WHERE id = ?;');
         $stmt->execute([$id]);
         echo json_encode(['msg' => 'ok']);
     } catch (Exception $e) {
-        echo json_encode(['msg' => $e->getMessage()]);
+        echo json_encode(['msg' => 'error', 'error' => $e->getMessage()]);
     }
+    exit;
 }

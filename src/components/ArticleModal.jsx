@@ -4,17 +4,18 @@ import { AiOutlineClose } from 'react-icons/ai'
 function ArticleModal ({ baseURL, id, onClose }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${baseURL}/index.php?id=${id}`)
         const data = await response.json()
-        setData(data)
-        setLoading(false)
+        if (data.msg === 'ok') {
+          setData(data.data)
+        }
       } catch (error) {
-        setError(error)
+        alert('エラーが発生しました: ' + error.message)
+      } finally {
         setLoading(false)
       }
     }
@@ -50,10 +51,7 @@ function ArticleModal ({ baseURL, id, onClose }) {
             <AiOutlineClose />
           </button>
         </div>
-        <div className='modal-loading'>
-          {loading ? 'Loading...' : ''}
-          {error ? 'Error: ' + error.message : ''}
-        </div>
+        <div className='modal-loading'>{loading ? 'Loading...' : ''}</div>
         {!data ? (
           ''
         ) : (

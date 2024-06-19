@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 function LoginPage ({ baseURL, setCurrentPage, setLogin }) {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -14,7 +13,7 @@ function LoginPage ({ baseURL, setCurrentPage, setLogin }) {
     const password = formData.get('password')
 
     try {
-      const response = await fetch(`${baseURL}/`, {
+      const response = await fetch(`${baseURL}/index.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -27,9 +26,11 @@ function LoginPage ({ baseURL, setCurrentPage, setLogin }) {
         localStorage.setItem('isLoggedIn', 'true')
         setLogin(true)
         setCurrentPage('homePage')
+      } else {
+        alert('メッセージ: ' + data.error)
       }
     } catch (error) {
-      setError(error)
+      alert('エラーが発生しました: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -37,10 +38,6 @@ function LoginPage ({ baseURL, setCurrentPage, setLogin }) {
 
   if (loading) {
     return <div>Loading...</div>
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>
   }
 
   return (

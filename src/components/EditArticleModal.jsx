@@ -4,23 +4,24 @@ import { AiOutlineClose } from 'react-icons/ai'
 function EditArticleModal ({ baseURL, id, onClose, setUpdate }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${baseURL}/index.php?id=${id}`)
         const data = await response.json()
-        setData(data)
-        setLoading(false)
+        if (data.msg === 'ok') {
+          setData(data.data)
+        }
       } catch (error) {
-        setError(error)
+        alert('エラーが発生しました: ' + error.message)
+      } finally {
         setLoading(false)
       }
     }
 
     fetchData()
-  }, [])
+  }, [id])
 
   useEffect(() => {
     const handleKeyDown = event => {
@@ -44,14 +45,13 @@ function EditArticleModal ({ baseURL, id, onClose, setUpdate }) {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    setLoading(true)
 
     const formData = new FormData(e.target)
     const title = formData.get('title')
     const content = formData.get('content')
 
     try {
-      const response = await fetch(`${baseURL}/`, {
+      const response = await fetch(`${baseURL}/index.php`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -60,11 +60,14 @@ function EditArticleModal ({ baseURL, id, onClose, setUpdate }) {
         credentials: 'include'
       })
       const data = await response.json()
-      setUpdate(pre => pre + 1)
+      if (data.msg === 'ok') {
+        setUpdate(pre => pre + 1)
+        alert('更新しました')
+      } else {
+        alert('更新に失敗しました。')
+      }
     } catch (error) {
-      setError(error)
-    } finally {
-      setLoading(false)
+      alert('エラーが発生しました: ' + error.message)
     }
   }
 
@@ -76,10 +79,7 @@ function EditArticleModal ({ baseURL, id, onClose, setUpdate }) {
             <AiOutlineClose />
           </button>
         </div>
-        <div className='modal-loading'>
-          {loading ? 'Loading...' : ''}
-          {error ? 'Error: ' + error.message : ''}
-        </div>
+        <div className='modal-loading'>{loading ? 'Loading...' : ''}</div>
         {!data ? (
           ''
         ) : (
