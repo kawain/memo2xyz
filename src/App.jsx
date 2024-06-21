@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import HomePage from './components/HomePage'
 import CreatePage from './components/CreatePage'
 import LoginPage from './components/LoginPage'
+import FileUpload from './components/FileUpload'
 import Footer from './components/Footer'
 
 function App () {
@@ -44,6 +45,9 @@ function App () {
           setCurrentPage={setCurrentPage}
           setLogin={setLogin}
         />
+      ),
+      fileUpload: (
+        <FileUpload baseURL={baseURL} update={update} setUpdate={setUpdate} />
       )
     }
 

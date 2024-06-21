@@ -34,6 +34,13 @@ function Navbar ({ currentPage, setCurrentPage, login, setLogin }) {
               新規作成
             </button>
 
+            <button
+              onClick={() => setCurrentPage('fileUpload')}
+              disabled={currentPage === 'fileUpload'}
+            >
+              ファイルアップロード
+            </button>
+
             <button onClick={handleLogout}>ログアウト</button>
           </>
         )}

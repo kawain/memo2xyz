@@ -17,6 +17,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // なければテーブル作成
     $pdo->exec('CREATE TABLE IF NOT EXISTS posts(id INTEGER PRIMARY KEY, title TEXT, content TEXT);');
+    $pdo->exec('CREATE TABLE IF NOT EXISTS upload(id INTEGER PRIMARY KEY, name TEXT UNIQUE);');
 } catch (Exception $e) {
     echo json_encode(['msg' => 'error', 'error' => 'データベース接続に失敗しました: ' . $e->getMessage()]);
     exit;
