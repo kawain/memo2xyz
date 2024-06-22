@@ -4,6 +4,7 @@ import HomePage from './components/HomePage'
 import CreatePage from './components/CreatePage'
 import LoginPage from './components/LoginPage'
 import FileUpload from './components/FileUpload'
+import ChatPage from './components/ChatPage'
 import Footer from './components/Footer'
 
 function App () {
@@ -48,7 +49,8 @@ function App () {
       ),
       fileUpload: (
         <FileUpload baseURL={baseURL} update={update} setUpdate={setUpdate} />
-      )
+      ),
+      chatPage: <ChatPage baseURL={baseURL} />
     }
 
     return pages[currentPage] || pages.homePage

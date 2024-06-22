@@ -41,6 +41,13 @@ function Navbar ({ currentPage, setCurrentPage, login, setLogin }) {
               ファイルアップロード
             </button>
 
+            <button
+              onClick={() => setCurrentPage('chatPage')}
+              disabled={currentPage === 'chatPage'}
+            >
+              チャット
+            </button>
+
             <button onClick={handleLogout}>ログアウト</button>
           </>
         )}
