@@ -260,6 +260,7 @@ body {
   align-items: flex-start;
   padding: 10px;
   border-radius: 10px;
+  margin: 20px 0;
 }
 
 .message.user {
@@ -273,7 +274,7 @@ body {
 }
 
 .message-icon {
-  font-size: 48px;
+  font-size: 24px;
   margin-right: 10px;
 }
 
@@ -294,9 +295,14 @@ body {
 
 .chat-form button {
   padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
   cursor: pointer;
+}
+
+.new-chat-btn {
+  width: 100%;
+  display: block;
+  margin: 50px 0;
+  padding: 5px;
 }
 
 footer {

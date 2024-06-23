@@ -1,4 +1,6 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import { CiFaceSmile } from 'react-icons/ci'
+import { FaFaceGrinBeam } from 'react-icons/fa6'
 
 function ChatPage ({ baseURL }) {
   const [messages, setMessages] = useState([])
@@ -48,6 +50,15 @@ function ChatPage ({ baseURL }) {
     }
   }
 
+  const convertNewlinesToBr = text => {
+    return text.split('\n').map((line, index, array) => (
+      <React.Fragment key={index}>
+        {line}
+        {index < array.length - 1 && <br />}
+      </React.Fragment>
+    ))
+  }
+
   return (
     <>
       <h2>チャット - Groq API</h2>
@@ -55,14 +66,18 @@ function ChatPage ({ baseURL }) {
         {messages.map((msg, i) => (
           <div key={i} className={`message ${msg.role}`}>
             <div className='message-icon'>
-              {msg.role === 'user' ? '👤' : '🤖'}
+              {msg.role === 'user' ? <CiFaceSmile /> : <FaFaceGrinBeam />}
             </div>
-            <div className='message-content'>{msg.content}</div>
+            <div className='message-content'>
+              {convertNewlinesToBr(msg.content)}
+            </div>
           </div>
         ))}
         {isLoading && (
           <div className='message assistant'>
-            <div className='message-icon'>🤖</div>
+            <div className='message-icon'>
+              <FaFaceGrinBeam />
+            </div>
             <div className='message-content'>考え中...</div>
           </div>
         )}
@@ -74,6 +89,9 @@ function ChatPage ({ baseURL }) {
           送信
         </button>
       </form>
+      <button onClick={() => setMessages([])} className='new-chat-btn'>
+        新しいチャット
+      </button>
     </>
   )
 }
