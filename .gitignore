@@ -28,3 +28,5 @@ package-lock.json
 backend/config.php
 backend/phpinfo.php
 *.db
+backend/uploads/*
+

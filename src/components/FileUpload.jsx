@@ -34,6 +34,7 @@ function FileUpload ({ baseURL, update, setUpdate }) {
       return
     }
 
+    setLoading(true)
     const formData = new FormData()
     formData.append('fileToUpload', file)
 
