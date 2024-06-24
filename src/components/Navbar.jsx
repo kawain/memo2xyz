@@ -1,7 +1,9 @@
-function Navbar ({ currentPage, setCurrentPage, login, setLogin }) {
+function Navbar ({ currentPage, setCurrentPage, login, setLogin, setUsername }) {
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('userName')
     setLogin(false)
+    setUsername('')
     setCurrentPage('homePage')
   }
 

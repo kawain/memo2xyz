@@ -68,6 +68,7 @@ function App () {
         setCurrentPage={setCurrentPage}
         login={login}
         setLogin={setLogin}
+        setUsername={setUsername}
       />
 
       <div className='container'>{renderPage()}</div>
