@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function LoginPage ({ baseURL, setCurrentPage, setLogin }) {
+function LoginPage ({ baseURL, setCurrentPage, setLogin, setUsername }) {
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async e => {
@@ -24,6 +24,8 @@ function LoginPage ({ baseURL, setCurrentPage, setLogin }) {
       const data = await response.json()
       if (data.msg === 'ok') {
         localStorage.setItem('isLoggedIn', 'true')
+        localStorage.setItem('userName', username)
+        setUsername(username)
         setLogin(true)
         setCurrentPage('homePage')
       } else {
@@ -47,7 +49,13 @@ function LoginPage ({ baseURL, setCurrentPage, setLogin }) {
         <input type='hidden' name='mode' value='login' />
         <div>
           <label htmlFor='username'>ID</label>
-          <input type='text' id='username' name='username' autoComplete='off' />
+          <input
+            type='text'
+            id='username'
+            name='username'
+            autoComplete='off'
+            required
+          />
         </div>
         <div>
           <label htmlFor='password'>パスワード</label>
@@ -56,6 +64,7 @@ function LoginPage ({ baseURL, setCurrentPage, setLogin }) {
             id='password'
             name='password'
             autoComplete='off'
+            required
           />
         </div>
         <button type='submit'>送信</button>

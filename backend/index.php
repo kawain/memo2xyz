@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = $postData['username'] ?? '';
         $password = $postData['password'] ?? '';
 
-        if ($username === '' && $password === PASSWORD) {
+        if ($password === PASSWORD) {
             echo json_encode(['msg' => 'ok']);
         } else {
             echo json_encode(['msg' => 'error', 'error' => '認証に失敗しました。']);

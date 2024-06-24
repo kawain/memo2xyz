@@ -14,11 +14,14 @@ function App () {
   const baseURL = import.meta.env.VITE_API_BASE_URL
   const [currentPage, setCurrentPage] = useState('homePage')
   const [login, setLogin] = useState(false)
+  const [username, setUsername] = useState('')
   const [update, setUpdate] = useState(0)
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn')
+    const userName = localStorage.getItem('userName')
     if (isLoggedIn === 'true') {
+      setUsername(userName)
       setLogin(true)
     }
   }, [])
@@ -45,12 +48,13 @@ function App () {
           baseURL={baseURL}
           setCurrentPage={setCurrentPage}
           setLogin={setLogin}
+          setUsername={setUsername}
         />
       ),
       fileUpload: (
         <FileUpload baseURL={baseURL} update={update} setUpdate={setUpdate} />
       ),
-      chatPage: <ChatPage baseURL={baseURL} />
+      chatPage: <ChatPage baseURL={baseURL} username={username} />
     }
 
     return pages[currentPage] || pages.homePage

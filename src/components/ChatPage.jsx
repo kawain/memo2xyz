@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react'
 import { CiFaceSmile } from 'react-icons/ci'
 import { FaFaceGrinBeam } from 'react-icons/fa6'
 
-function ChatPage ({ baseURL }) {
-  const [messages, setMessages] = useState([])
+function ChatPage ({ baseURL, username }) {
+  const systemUsername = { role: 'system', content: `ユーザー名: ${username}` }
+  const [messages, setMessages] = useState([systemUsername])
   const [isLoading, setIsLoading] = useState(false)
   const formRef = useRef(null)
   const messagesEndRef = useRef(null)
@@ -61,18 +62,26 @@ function ChatPage ({ baseURL }) {
 
   return (
     <>
-      <h2>チャット - Groq API</h2>
+      <h2>
+        チャット -{' '}
+        <a href='https://groq.com/' target='_blank' rel='noopener noreferrer'>
+          Groq API Model: llama3-70b-8192
+        </a>
+      </h2>
       <div className='message-container'>
-        {messages.map((msg, i) => (
-          <div key={i} className={`message ${msg.role}`}>
-            <div className='message-icon'>
-              {msg.role === 'user' ? <CiFaceSmile /> : <FaFaceGrinBeam />}
-            </div>
-            <div className='message-content'>
-              {convertNewlinesToBr(msg.content)}
-            </div>
-          </div>
-        ))}
+        {messages.map(
+          (msg, i) =>
+            msg.role !== 'system' && (
+              <div key={i} className={`message ${msg.role}`}>
+                <div className='message-icon'>
+                  {msg.role === 'user' ? <CiFaceSmile /> : <FaFaceGrinBeam />}
+                </div>
+                <div className='message-content'>
+                  {convertNewlinesToBr(msg.content)}
+                </div>
+              </div>
+            )
+        )}
         {isLoading && (
           <div className='message assistant'>
             <div className='message-icon'>
@@ -89,7 +98,10 @@ function ChatPage ({ baseURL }) {
           送信
         </button>
       </form>
-      <button onClick={() => setMessages([])} className='new-chat-btn'>
+      <button
+        onClick={() => setMessages([systemUsername])}
+        className='new-chat-btn'
+      >
         新しいチャット
       </button>
     </>

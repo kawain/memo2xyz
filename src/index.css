@@ -16,6 +16,10 @@ body {
   font-family: serif;
 }
 
+a {
+  color: var(--text-color);
+}
+
 .navbar {
   z-index: 10;
   position: fixed;
